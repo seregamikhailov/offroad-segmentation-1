@@ -74,8 +74,10 @@ def main():
     num_classes = len(classes)
     size = tuple(dc["image_size"])
 
-    train_ds = SegDataset(dc["root"], "train", size, train=True, limit=args.limit)
-    val_ds = SegDataset(dc["root"], "val", size, train=False, limit=args.limit)
+    train_ds = SegDataset(dc["root"], "train", size, train=True, limit=args.limit,
+                          stride=dc.get("train_stride", 1))
+    val_ds = SegDataset(dc["root"], "val", size, train=False, limit=args.limit,
+                        stride=dc.get("val_stride", 1))
     pin = device.type == "cuda"
     nw = dc["num_workers"]
     train_dl = DataLoader(train_ds, tc["batch_size"], shuffle=True, num_workers=nw, drop_last=True,

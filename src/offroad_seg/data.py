@@ -32,9 +32,9 @@ def build_transforms(size, train):
 
 
 class SegDataset(Dataset):
-    def __init__(self, root, split, size, train=False, limit=None):
+    def __init__(self, root, split, size, train=False, limit=None, stride=1):
         lines = (Path(root) / "splits" / f"{split}.txt").read_text().split("\n")
-        self.pairs = [ln.split("\t") for ln in lines if ln.strip()]
+        self.pairs = [ln.split("\t") for ln in lines if ln.strip()][::max(1, stride)]
         if limit:
             self.pairs = self.pairs[:limit]
         self.tf = build_transforms(size, train)
