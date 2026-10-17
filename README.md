@@ -19,7 +19,8 @@ The project deliberately relies only on openly distributed models and libraries 
 configs/
   baseline.yaml        baseline experiment (DeepLabV3+ / ResNet34)
   rugd_split.json      sequence-to-split assignment used for train/val/test
-  sweeps/screening.yaml  25-run screening sweep (architecture, encoder, loss, recipe)
+  sweeps/screening.yaml      25-run screening sweep (architecture, encoder, loss, recipe), full budget
+  sweeps/screening_mac.yaml  same 25 runs with a reduced budget for a laptop (Apple Silicon)
 scripts/
   download_rugd_hf.py  download RUGD from a Hugging Face mirror
   prepare_rugd.py      colour masks -> class-id masks, split lists, classes.json
@@ -27,6 +28,7 @@ scripts/
   check_sweep.py       pre-flight check: build every model of a sweep, one forward/backward pass
   setup_remote.sh      one-shot setup on a Linux + NVIDIA GPU machine
   run_screening.sh     run the screening sweep and aggregate results
+  run_screening_mac.sh run the Mac-sized sweep (keeps the Mac awake with caffeinate)
 src/offroad_seg/
   data.py              dataset and augmentations (Albumentations)
   models.py            model factory, device selection
@@ -108,6 +110,17 @@ python -m offroad_seg.evaluate --weights runs/screening/<run>/best.pt --split te
 ```
 
 Models are compared on val; the test split is evaluated only for the few selected final configurations.
+
+### Running on a Mac (Apple Silicon, MPS)
+
+`configs/sweeps/screening_mac.yaml` runs the same 25 experiments with a reduced budget: every 2nd train/val frame (`data.train_stride` / `data.val_stride`; neighbouring frames of a video are nearly identical), 288x384 input and 10 epochs. Measured on the development Mac, one epoch takes about 100 s for DeepLabV3+ / ResNet34 and about 150 s for the heaviest variants, so the whole sweep needs roughly 8 hours. Keep the Mac plugged in.
+
+```bash
+nohup bash scripts/run_screening_mac.sh > sweep_mac.log 2>&1 &
+tail -f sweep_mac.log        # overall progress; per-run logs are in runs/screening_mac/<run>/train.log
+```
+
+Use these results to rank variants only. Confirm the winners with the full schedule and evaluate them on the full val and test splits.
 
 ### Running on a remote GPU
 
