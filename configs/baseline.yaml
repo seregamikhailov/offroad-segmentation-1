@@ -1,0 +1,24 @@
+# Базовый эксперимент: DeepLabV3+ с лёгким энкодером на RUGD.
+data:
+  root: data/rugd              # результат scripts/prepare_rugd.py
+  image_size: [384, 512]       # H, W (кадры RUGD 688x550, берём с запасом по скорости)
+  ignore_index: 255            # void и неизвестные цвета
+  num_workers: 4
+
+model:
+  arch: DeepLabV3Plus          # Unet | FPN | DeepLabV3Plus | PSPNet | Linknet ...
+  encoder: resnet34            # resnet18 | resnet34 | mobilenet_v2 | efficientnet-b0 ...
+  encoder_weights: imagenet    # null — обучение с нуля; imagenet скачает веса (~85 МБ для resnet34)
+
+train:
+  epochs: 30
+  batch_size: 8
+  lr: 3.0e-4
+  weight_decay: 1.0e-4
+  loss: ce_dice                # ce | ce_dice
+  class_weights: false         # true — веса по обратной частоте классов (дисбаланс RUGD)
+  amp: true                    # применяется только на CUDA
+  seed: 42
+  device: auto                 # auto | cuda | mps | cpu
+
+output_dir: runs/baseline
