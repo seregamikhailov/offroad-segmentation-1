@@ -1,0 +1,42 @@
+# Screening sweep: one factor changes against the baseline (DeepLabV3+ / ResNet34 / CE+Dice /
+# ImageNet weights / 384x512 / AdamW lr 3e-4). Same short schedule for all runs, one seed each.
+# The run "arch_deeplabv3plus" is the reference for every group.
+name: screening
+base: configs/baseline.yaml
+common:
+  train.epochs: 20
+  train.seed: 42
+
+experiments:
+  # ---- Group 1: architecture family (encoder resnet34) ----
+  - {name: arch_deeplabv3plus, group: arch, set: {model.arch: DeepLabV3Plus}}
+  - {name: arch_deeplabv3,     group: arch, set: {model.arch: DeepLabV3}}
+  - {name: arch_unet,          group: arch, set: {model.arch: Unet}}
+  - {name: arch_unetplusplus,  group: arch, set: {model.arch: UnetPlusPlus}}
+  - {name: arch_fpn,           group: arch, set: {model.arch: FPN}}
+  - {name: arch_pspnet,        group: arch, set: {model.arch: PSPNet}}
+  - {name: arch_linknet,       group: arch, set: {model.arch: Linknet}}
+  - {name: arch_manet,         group: arch, set: {model.arch: MAnet}}
+  - {name: arch_pan,           group: arch, set: {model.arch: PAN}}
+  - {name: arch_upernet,       group: arch, set: {model.arch: UPerNet}}
+
+  # ---- Group 2: encoder / model complexity (DeepLabV3+) ----
+  - {name: enc_resnet18,       group: encoder, set: {model.encoder: resnet18}}
+  - {name: enc_resnet50,       group: encoder, set: {model.encoder: resnet50}}
+  - {name: enc_resnet101,      group: encoder, set: {model.encoder: resnet101}}
+  - {name: enc_mobilenet_v2,   group: encoder, set: {model.encoder: mobilenet_v2}}
+  - {name: enc_efficientnet_b0, group: encoder, set: {model.encoder: efficientnet-b0}}
+
+  # ---- Group 3: loss and class imbalance (DeepLabV3+ / ResNet34) ----
+  - {name: loss_ce,            group: loss, set: {train.loss: ce}}
+  - {name: loss_ce_dice_w,     group: loss, set: {train.loss: ce_dice, train.class_weights: true}}
+  - {name: loss_focal_dice,    group: loss, set: {train.loss: focal_dice}}
+  - {name: loss_lovasz,        group: loss, set: {train.loss: lovasz}}
+  - {name: loss_ce_lovasz,     group: loss, set: {train.loss: ce_lovasz}}
+
+  # ---- Group 4: training recipe (DeepLabV3+ / ResNet34) ----
+  - {name: recipe_scratch,     group: recipe, set: {model.encoder_weights: null}}
+  - {name: recipe_res_288x384, group: recipe, set: {data.image_size: [288, 384]}}
+  - {name: recipe_res_512x672, group: recipe, set: {data.image_size: [512, 672]}}
+  - {name: recipe_lr_1e-4,     group: recipe, set: {train.lr: 1.0e-4}}
+  - {name: recipe_lr_1e-3,     group: recipe, set: {train.lr: 1.0e-3}}
