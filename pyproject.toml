@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "offroad-seg"
+version = "0.1.0"
+description = "CNN-based semantic segmentation of off-road scenes: training, evaluation and model optimization"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = [
+    "torch",
+    "torchvision",
+    "segmentation-models-pytorch",
+    "albumentations",
+    "opencv-python-headless",
+    "numpy",
+    "pillow",
+    "pyyaml",
+    "tqdm",
+    "huggingface_hub",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
