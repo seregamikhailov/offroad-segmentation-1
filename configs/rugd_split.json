@@ -1,0 +1,20 @@
+{
+  "creek": "test",
+  "park-1": "test",
+  "park-2": "train",
+  "park-8": "val",
+  "trail": "val",
+  "trail-10": "test",
+  "trail-11": "val",
+  "trail-12": "train",
+  "trail-13": "train",
+  "trail-14": "test",
+  "trail-15": "train",
+  "trail-3": "train",
+  "trail-4": "train",
+  "trail-5": "val",
+  "trail-6": "train",
+  "trail-7": "train",
+  "trail-9": "val",
+  "village": "test"
+}
