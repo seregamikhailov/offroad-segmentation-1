@@ -1,0 +1,19 @@
+# Environments
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Data and experiment artifacts (large / third-party licensed)
+data/
+runs/
+*.pt
+*.pth
+*.onnx
+*.ckpt
+
+# Logs and OS files
+*.log
+.DS_Store
